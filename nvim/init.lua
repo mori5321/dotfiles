@@ -1,5 +1,11 @@
 bufOpen = {"BufNewFile", "BufRead"}
 
+
+-- Utilities 
+map_key = function(mode, lhs, rhs)
+  vim.api.nvim_set_keymap(mode, lhs, rhs, { noremap = true, silent = true })
+end
+
 -- Runtimepath
 vim.opt.runtimepath:append {"$HOME/dotfiles/nvim"}
 
@@ -22,7 +28,8 @@ vim.o.smartindent = true
 vim.o.backspace = 'indent,eol,start'
 
 -- clipboard 
-vim.o.clipboard = "unnamedplus"
+vim.opt.clipboard:append{"unnamedplus"}
+-- vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 
 -- 行番号
 vim.o.number = true
@@ -36,32 +43,20 @@ for key, value in pairs({ "Normal", "NonText", "LineNr", "Folded", "EndOfBuffer"
   vim.api.nvim_set_hl(0, value, { ctermbg="none"})
 end
 
--- Ftplugin
-mk_tab_size = function(size)
-  return string.format("setlocal tabstop=%d shiftwidth=%d softtabstop=%d", size, size, size)
-end
-
----- Lua
-vim.api.nvim_create_augroup("lua", {})
-vim.api.nvim_create_autocmd(bufOpen, {
-  group = "lua",
-  pattern = { "*.lua" },
-  callback = function()
-    vim.api.nvim_exec(mk_tab_size(2), false)
-  end
-})
-
-
-
--- Key map utiltity
-map_key = function(mode, lhs, rhs)
-  vim.api.nvim_set_keymap(mode, lhs, rhs, { noremap = true, silent = true })
-end
 
 
 -- Quickfix(cw)
 ---- preview file by p key 
-map_key('n', 'p', '<CR>zz<C-w>p')
+-- map_key('n', 'p', '<CR>zz<C-w>p')
+vim.api.nvim_create_augroup("Quickfix", {})
+vim.api.nvim_create_autocmd("FileType",  {
+  group = "Quickfix",
+  pattern = "qf",
+  callback = function()
+    vim.api.nvim_set_keymap("n", "p", "<CR>zz<C-w>p", { noremap = true, silent = true})
+  end
+})
+
 
 -- Packer.nvim
 require 'plugins'
@@ -141,11 +136,35 @@ cmp.setup({
 })
 
 
--- caw
+-- Comment-Out by caw
 -- "Ctrl-k => Single-Line Comment Out
 -- "Ctrl-c => Wrapped Comment Out
 map_key('n', '<C-k>', '<Plug>(caw:hatpos:toggle)')
 map_key('v', '<C-k>', '<Plug>(caw:hatpos:toggle)')
 map_key('n', '<C-c>', '<Plug>(caw:wrap:toggle)')
 map_key('v', '<C-c>', '<Plug>(caw:wrap:toggle)')
+
+
+-- vimgrep keymap
+map_key('n', '<S-h>', ':cprevious<CR>')
+map_key('n', '<S-l>', ':cnext<CR>')
+map_key('n', '<S-k>', ':cfirst<CR>')
+map_key('n', '<S-j>', ':clast<CR>')
+
+
+-- Ftplugin
+mk_tab_size = function(size)
+  return string.format("setlocal tabstop=%d shiftwidth=%d softtabstop=%d", size, size, size)
+end
+
+---- Lua
+vim.api.nvim_create_augroup("lua", {})
+vim.api.nvim_create_autocmd(bufOpen, {
+  group = "lua",
+  pattern = { "*.lua" },
+  callback = function()
+    vim.api.nvim_exec(mk_tab_size(2), false)
+  end
+})
+
 
