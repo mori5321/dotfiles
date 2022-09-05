@@ -24,16 +24,8 @@ vim.o.backspace = 'indent,eol,start'
 -- clipboard 
 vim.o.clipboard = "unnamedplus"
 
-
-
 -- 行番号
 vim.o.number = true
--- vim.api.nvim_create_autocmd("ColorScheme", {
---   pattern="*",
---   callback = function()
---     vim.api.nvim_set_hl(0, "LineNr", { cterm = 499, bold = true })   
---   end,
--- })
 
 -- Color Scheme
 vim.opt.background = "dark"
@@ -43,13 +35,6 @@ vim.cmd [[ colorscheme hybrid ]]
 for key, value in pairs({ "Normal", "NonText", "LineNr", "Folded", "EndOfBuffer" }) do
   vim.api.nvim_set_hl(0, value, { ctermbg="none"})
 end
--- vim.api.nvim_set_hl(0, "Normal", { ctermbg="none" })
--- vim.api.nvim_set_hl(0, "NonText", { ctermbg="none"})
--- highlight NonText ctermbg=none
--- highlight LineNr ctermbg=none
--- highlight Folded ctermbg=none
--- highlight EndOfBuffer ctermbg=none
-
 
 -- Ftplugin
 mk_tab_size = function(size)
@@ -77,17 +62,13 @@ end
 -- Quickfix(cw)
 ---- preview file by p key 
 map_key('n', 'p', '<CR>zz<C-w>p')
--- vim.api.nvim_set_keymap('n', 'p', '<CR>zz<C-w>p', { noremap = true })
-
 
 -- Packer.nvim
 require 'plugins'
 vim.cmd[[autocmd BufWritePost lua/plugins.lua PackerCompile]]
 
-
 -- fzf-lua
 vim.api.nvim_set_keymap('n', '<c-P>', "<cmd>lua require('fzf-lua').files()<CR>", { noremap = true, silent = true })
-
 
 
 -- bultin-lsp
@@ -167,6 +148,4 @@ map_key('n', '<C-k>', '<Plug>(caw:hatpos:toggle)')
 map_key('v', '<C-k>', '<Plug>(caw:hatpos:toggle)')
 map_key('n', '<C-c>', '<Plug>(caw:wrap:toggle)')
 map_key('v', '<C-c>', '<Plug>(caw:wrap:toggle)')
-
-
 
