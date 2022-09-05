@@ -111,10 +111,14 @@ require("mason-lspconfig").setup_handlers {
 -- SEE: https://zenn.dev/nazo6/articles/c2f16b07798bab
 capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-vim.opt.completeopt = "menu,menuone,noselect"
+vim.opt.completeopt = "menuone,noselect,noinsert"
+-- vim.opt.completeopt = "menu,menuone,noselect,noinsert" -- menuが入っているとnoinsertが動かない
+
 
 local cmp = require "cmp"
 cmp.setup({
+  enabled = true,
+  preselect = cmp.PreselectMode.None,
   snippet = {
     expand = function(args)
       vim.fn["vsnip#anonymous"](args.body)
