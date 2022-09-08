@@ -99,7 +99,7 @@ local on_attach = function(client, bufnr)
   -- Edit
   set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
   set("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-  set("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+  set("n", "<space>f", "<cmd>lua vim.lsp.buf.format()<CR>")
   
   -- Location List
   set("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>")
@@ -119,6 +119,62 @@ require("mason-lspconfig").setup_handlers {
       on_attach = on_attach
     }
   end,
+}
+
+
+-- # Format on Save by null-ls (disabled)
+-- local lsp_formatting = function(bufnr)
+--     vim.lsp.buf.format({
+--         filter = function(client)
+--             -- apply whatever logic you want (in this example, we'll only use null-ls)
+--             return client.name == "null-ls"
+--         end,
+--         bufnr = bufnr,
+--     })
+-- end
+-- 
+-- -- if you want to set up formatting on save, you can use this as a callback
+-- local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+-- 
+-- -- add to your shared on_attach callback
+-- local on_attach_null_ls = function(client, bufnr)
+--     if client.supports_method("textDocument/formatting") then
+--         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+--         vim.api.nvim_create_autocmd("BufWritePre", {
+--             group = augroup,
+--             buffer = bufnr,
+--             callback = function()
+--                 lsp_formatting(bufnr)
+--             end,
+--         })
+--     end
+-- end
+
+local null_ls = require "null-ls"
+null_ls.setup {
+  sources = {
+    -- null_ls.builtins.formatting.deno_fmt.with {
+    --   condition = function(utils)
+    --     return not (utils.has_file { ".prettierrc", ".prettierrc.js", "deno.json", "deno.jsonc" })
+    --   end,
+    -- },
+    -- null_ls.builtins.formatting.eslint.with {
+    --   condition = function(utils)
+    --     return utils.has_file { ".eslintrc.js", ".eslintrc.json" }
+    --   end,
+    --   prefer_local = "node_modules/.bin",
+    -- },
+    null_ls.builtins.formatting.prettier.with {
+      condition = function(utils)
+        return utils.has_file { ".prettierrc", ".prettierrc.js", ".prettierrc.json" }
+      end,
+      prefer_local = "node_modules/.bin",
+    },
+    null_ls.builtins.diagnostics.eslint.with {
+      prefer_local = "node_modules/.bin",
+    },
+  },
+  on_attach = on_attach_null_ls
 }
 
 

@@ -38,6 +38,9 @@ require'packer'.startup(function()
   use "neovim/nvim-lspconfig"
   use "williamboman/mason.nvim"
   use "williamboman/mason-lspconfig.nvim"
+        
+  -- formatter
+  use { "jose-elias-alvarez/null-ls.nvim", requires = { "nvim-lua/plenary.nvim" } }
 
   -- cmp
   use "hrsh7th/nvim-cmp"
