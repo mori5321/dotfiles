@@ -24,6 +24,7 @@ vim.o.softtabstop = 4
 vim.o.expandtab = true
 vim.o.smartindent = true
 
+
 -- backspace behaviour
 vim.o.backspace = 'indent,eol,start'
 
@@ -43,6 +44,12 @@ for key, value in pairs({ "Normal", "NonText", "LineNr", "Folded", "EndOfBuffer"
   vim.api.nvim_set_hl(0, value, { ctermbg="none"})
 end
 
+-- netrw
+vim.g.netrw_liststyle = 3
+-- vを押したとき右側にwindowを開く(デフォルトは下側)
+vim.g.netrw_altv = 1
+-- oを押したときに下側にwindowを開く(デフォルトは上側)
+vim.g.netrw_alto = 1
 
 
 -- Quickfix(cw)
@@ -74,25 +81,33 @@ vim.api.nvim_set_keymap('n', '<c-P>', "<cmd>lua require('fzf-lua').files()<CR>",
 local on_attach = function(client, bufnr)
   local set = vim.keymap.set
   
+  -- Jump
   set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
   set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
   set("n", "<space>h", "<cmd>lua vim.lsp.buf.hover()<CR>")
   set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
+  set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
 
+  set("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
   set("n", "<C-k>", "<cmd>lua vm.lsp.buf.signature_help()<CR>")
+  set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
+  
+  -- Move
+  set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>")
+  set("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")
+  
+  -- Edit
+  set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
+  set("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+  set("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+  
+  -- Location List
+  set("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>")
 
+  -- Others
   set("n", "<space>wa", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>")
   set("n", "<space>wr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>")
   set("n", "<space>wl", "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>")
-  set("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-  set("n", "<space>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-  set("n", "<space>ca", "<cmd>lua vim.lsp.buf.code_action()<CR>")
-  set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
-  set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
-  set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>")
-  set("n", "]d", "<cmd>lua vim.lsp.diagnostic.goto_next()<CR>")
-  set("n", "<space>q", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>")
-  set("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
 end
 
 -- mason (external dependency installer for lsp)
@@ -139,6 +154,12 @@ cmp.setup({
   })
 })
 
+-- 非選択時は改行する
+cmp.setup({
+  mapping = cmp.mapping.preset.insert({
+    ['<CR>'] = cmp.mapping.confirm({ select = false }),
+  }),
+})
 
 -- Comment-Out by caw
 -- "Ctrl-k => Single-Line Comment Out
@@ -171,4 +192,13 @@ vim.api.nvim_create_autocmd(bufOpen, {
   end
 })
 
+---- Lua
+vim.api.nvim_create_augroup("typescript", {})
+vim.api.nvim_create_autocmd(bufOpen, {
+  group = "typescript",
+  pattern = { "*.ts", "*.tsx" },
+  callback = function()
+    vim.api.nvim_exec(mk_tab_size(2), false)
+  end
+})
 
