@@ -33,6 +33,9 @@ vim.opt.clipboard:append({ "unnamed" })
 -- 行番号
 vim.o.number = true
 
+-- mapleader
+vim.g.mapleader = " "
+
 -- Color Scheme
 vim.opt.background = "dark"
 vim.cmd([[ colorscheme hybrid ]])
@@ -211,14 +214,11 @@ cmp.setup({
 	}),
 })
 
--- Comment-Out by caw
--- "Ctrl-k => Single-Line Comment Out
--- "Ctrl-c => Wrapped Comment Out
-map_key("n", "<C-k>", "<Plug>(caw:hatpos:toggle)")
-map_key("v", "<C-k>", "<Plug>(caw:hatpos:toggle)")
-map_key("n", "<C-c>", "<Plug>(caw:wrap:toggle)")
-map_key("v", "<C-c>", "<Plug>(caw:wrap:toggle)")
-
+-- Comment-Out by nvim-comment
+require("nvim_comment").setup({
+	line_mapping = "<leader>k", -- Space + k for line
+	operator_mapping = "<leader>c", -- Space + c for rectangle select or line select
+})
 -- vimgrep keymap
 map_key("n", "<S-h>", ":cprevious<CR>")
 map_key("n", "<S-l>", ":cnext<CR>")
