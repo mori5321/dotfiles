@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	group = "Quickfix",
 	pattern = "qf",
 	callback = function()
-		vim.api.nvim_set_keymap("n", "p", "<CR>zz<C-w>p", { noremap = true, silent = true })
+		vim.api.nvim_set_keymap("n", "<leader>p", "<CR>zz<C-w>p", { noremap = true, silent = true })
 	end,
 })
 
@@ -87,8 +87,9 @@ local on_attach = function(client, bufnr)
 	set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
 
 	set("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>")
-	set("n", "<C-k>", "<cmd>lua vm.lsp.buf.signature_help()<CR>")
-	set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>")
+	set("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>")
+	-- set("n", "<space>e", "<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>", opts)
+	set("n", "<space>e", "<cmd>lua vim.diagnostic.open_float()<CR>")
 
 	-- Move
 	set("n", "[d", "<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>")
